@@ -37,71 +37,35 @@
 
 // ----- Timing definitions -------------------------------------------------
 
-// Keep the LED on for 2/3 of a second.
-#define BLINK_ON_TICKS  (TIMER_FREQUENCY_HZ * 3 / 4)
-#define BLINK_OFF_TICKS (TIMER_FREQUENCY_HZ - BLINK_ON_TICKS)
+
+
 
 // ----- main() ---------------------------------------------------------------
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wmissing-declarations"
-#pragma GCC diagnostic ignored "-Wreturn-type"
+
+#include"led.h"
+
+#define LOOP_COUNT 0x3FFFFF
 
 int
-main(int argc, char* argv[])
+main()
 {
-  // Show the program parameters (passed via semihosting).
-  // Output is via the semihosting output channel.
-  trace_dump_args(argc, argv);
-
-  // Send a greeting to the trace device (skipped on Release).
-  trace_puts("Hello ARM World!");
-
-  // Send a message to the standard output.
-  puts("Standard output message.");
-
-  // Send a message to the standard error.
-  fprintf(stderr, "Standard error message.\n");
-
-  // At this stage the system clock should have already been configured
-  // at high speed.
-  trace_printf("System clock: %u Hz\n", SystemCoreClock);
-
-  timer_start();
-
-  blink_led_init();
+  led_init();
   
-  uint32_t seconds = 0;
+  for(;;){
 
-#define LOOP_COUNT (5)
+      led_off();
+      delay_t(LOOP_COUNT);
+      led_on();
+      delay_t(LOOP_COUNT);
+      led_off();
 
-  int loops = LOOP_COUNT;
-  if (argc > 1)
-    {
-      // If defined, get the number of loops from the command line,
-      // configurable via semihosting.
-      loops = atoi (argv[1]);
-    }
 
-  // Short loop.
-  for (int i = 0; i < loops; i++)
-    {
-      blink_led_on();
-      timer_sleep(i == 0 ? TIMER_FREQUENCY_HZ : BLINK_ON_TICKS);
+  }
 
-      blink_led_off();
-      timer_sleep(BLINK_OFF_TICKS);
-
-      ++seconds;
-      // Count seconds on the trace device.
-      trace_printf("Second %u\n", seconds);
-    }
   return 0;
 }
 
-#pragma GCC diagnostic pop
 
-// ----------------------------------------------------------------------------

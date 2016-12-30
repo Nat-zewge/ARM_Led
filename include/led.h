@@ -12,9 +12,10 @@
 void led_init(void); //initialize
 
 
-void ledBlinkN(int num); // blink N-times
+//void ledBlinkN(int num); // blink N-times
 
-void blinkOnce(void);
+//void blinkOnce(void);
+void delay_t(unsigned long a);
 
 void led_on(void);
 
